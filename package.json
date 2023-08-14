@@ -1,0 +1,16 @@
+{
+  "name": "@mozeyinedu/cache",
+  "version": "0.0.2",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/inedumozey/cache.git"
+  },
+  "keywords": [],
+  "author": "DrMo",
+  "license": "ISC"
+}
