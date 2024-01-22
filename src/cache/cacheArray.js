@@ -1,16 +1,27 @@
 const path = require("path")
 const fs = require("fs");
 
-class Cache {
+class CacheArray {
     constructor(dir, file, id) {
-        this.fullPath = path.join(dir, file)
+        this.filePath = path.join(dir, file)
         this.id = id
+    }
+
+
+    dir = () => {
+        const arr = this.filePath.split('/');
+        return arr.slice(0, arr.length - 1).join("/")
+    }
+
+    file = () => {
+        const arr = this.filePath.split('/');
+        return arr[arr.length - 1]
     }
 
     // write into the file
     write = async (data) => {
         try {
-            await fs.writeFileSync(this.fullPath, JSON.stringify(data))
+            await fs.writeFileSync(this.filePath, JSON.stringify(data))
         }
         catch (err) {
             throw new Error(err.message)
@@ -20,7 +31,7 @@ class Cache {
     // write into the file
     read = async () => {
         try {
-            const store = await fs.readFileSync(this.fullPath, 'utf8');
+            const store = await fs.readFileSync(this.filePath, 'utf8');
             return store ? JSON.parse(store) : store
         }
         catch (err) {
@@ -29,10 +40,24 @@ class Cache {
     }
 
     // function that check if cachedProfile.json exist
-    isCahedProfileFileExist = async () => {
+    isCachedFileExist = async () => {
         try {
-            const isFileExist = await fs.existsSync(this.fullPath)
-            return isFileExist ? true : false
+            const isFileExist = await fs.existsSync(this.filePath)
+            const isDirExist = await fs.existsSync(this.dir())
+
+            if (!isDirExist) {
+                // create the dir and return false
+                await fs.mkdirSync(this.dir());
+                setTimeout(() => {
+                    return false
+                })
+            }
+            else if (!isFileExist) {
+                return false
+            }
+            else {
+                return true
+            }
         }
         catch (err) {
             throw new Error(err.message)
@@ -43,7 +68,7 @@ class Cache {
     getAll = async () => {
         try {
             // if the file existsSync, check if it contains data
-            if (await this.isCahedProfileFileExist()) {
+            if (this.isCachedFileExist()) {
                 // check if it contains data
                 const data = await this.read()
                 if (!data) {
@@ -209,4 +234,4 @@ class Cache {
     }
 }
 
-module.exports = Cache
+module.exports = CacheArray

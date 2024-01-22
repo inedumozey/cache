@@ -1,3 +1,3 @@
-const Cache = require('./src/cache');
+const { CacheSingle, CacheArray } = require('./src/cache');
 
-module.exports = { Cache };
+module.exports = { CacheSingle, CacheArray };
